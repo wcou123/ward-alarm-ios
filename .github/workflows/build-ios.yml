@@ -1,0 +1,51 @@
+name: Build iPhone alarm app
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: iphone-alarm-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    # Standard runner: free compute for this public repository.
+    # No larger runner, paid service, Actions artifact upload, or build cache.
+    if: github.repository == 'wcou123/ward-alarm-ios' && github.event.repository.private == false
+    runs-on: macos-26
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check free public build configuration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh api "repos/$GITHUB_REPOSITORY" --jq .private)" = false
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+      - name: Test scheduling on an iPhone simulator
+        run: bash scripts/test-simulator.sh
+      - name: Build unsigned device app
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: bash scripts/build-unsigned.sh
+      - name: Publish this build for SideStore
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA:0:7}"
+          printf 'Unsigned iOS 26 app for installation with your own free Apple Account through SideStore.\n\nSource commit: %s\nSimulator scheduling tests passed; installation, alarm sound and renewal still require a physical iPhone test.\n' "$GITHUB_SHA" > build/release-notes.md
+          gh release create "$TAG" \
+            dist/WardAlarm.ipa dist/WardAlarm.ipa.sha256 \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Alarm iPhone build ${GITHUB_RUN_NUMBER}" \
+            --notes-file build/release-notes.md \
+            --prerelease
