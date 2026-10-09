@@ -1,4 +1,4 @@
-name: Build iPhone alarm app
+name: Build BeutAlarm iPhone app
 
 on:
   workflow_dispatch:
@@ -41,11 +41,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="build-${GITHUB_RUN_NUMBER}-${GITHUB_SHA:0:7}"
-          printf 'Unsigned iOS 26 app for installation with your own free Apple Account through SideStore.\n\nSource commit: %s\nSimulator scheduling tests passed; installation, alarm sound and renewal still require a physical iPhone test.\n' "$GITHUB_SHA" > build/release-notes.md
+          printf 'Unsigned BeutAlarm iOS 26 app with a 60-second crescendo for installation with your own free Apple Account through SideStore.\n\nSource commit: %s\nSimulator scheduling tests passed; installation, alarm sound and renewal still require a physical iPhone test.\n' "$GITHUB_SHA" > build/release-notes.md
           gh release create "$TAG" \
-            dist/WardAlarm.ipa dist/WardAlarm.ipa.sha256 \
+            dist/BeutAlarm.ipa dist/BeutAlarm.ipa.sha256 \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
-            --title "Alarm iPhone build ${GITHUB_RUN_NUMBER}" \
+            --title "BeutAlarm iPhone build ${GITHUB_RUN_NUMBER}" \
             --notes-file build/release-notes.md \
             --prerelease

@@ -16,3 +16,6 @@ PROJECT-MEMORY.md
 CONVERSATIONS/
 .codex/
 .claude/
+
+__pycache__/
+*.py[cod]

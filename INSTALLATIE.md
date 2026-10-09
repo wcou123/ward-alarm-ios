@@ -30,20 +30,20 @@ Deze stappen volgen de [officiële installatiehandleiding](https://docs.sidestor
 
 ## 3. Onze alarmapp installeren
 
-Na een geslaagde GitHub-build staat `WardAlarm.ipa` bij de releases van het
+Na een geslaagde GitHub-build staat `BeutAlarm.ipa` bij de releases van het
 app-project. Een broncodebestand of een ongesigneerde IPA kan op zichzelf niet
 als gewone App Store-app geopend worden.
 
-1. Download `WardAlarm.ipa` op de iPhone en open het bestand met SideStore, of gebruik de plusknop bij **My Apps**.
+1. Download `BeutAlarm.ipa` op de iPhone en open het bestand met SideStore, of gebruik de plusknop bij **My Apps**.
 2. Laat SideStore het bestand ondertekenen en installeren terwijl wifi en LocalDevVPN actief zijn.
-3. Open **Alarm** en geef toestemming voor alarmen.
-4. Druk op **Test Windows-alarmgeluid**. Controleer dat je het geluid daadwerkelijk hoort.
+3. Open **BeutAlarm** en geef toestemming voor alarmen.
+4. Druk op **Test Windows-alarmgeluid**. Laat de geluidstest minstens 90 seconden spelen. Controleer dat het Windows-geluid heel stil begint en geleidelijk luider wordt en na minuut één luid blijft; stop met **Stop testgeluid**.
 
 ## 4. Alarmproef op een vergrendelde iPhone
 
 1. Druk op **Test alarm over 10 seconden**.
 2. Vergrendel onmiddellijk de iPhone met de zijknop.
-3. Controleer dat er een systeemalarm verschijnt én het Windows-geluid klinkt.
+3. Controleer dat er een systeemalarm verschijnt én het Windows-geluid klinkt. Laat het minstens 90 seconden spelen en controleer dat de opbouw één keer gebeurt en na minuut één luid blijft, ook met vergrendeld scherm. Controleer apart dat stoppen vóór 60 seconden ook het toekomstige luide vervolg annuleert. Meld afkappen, terugvallen op een ander geluid of ongewenste herhaling afzonderlijk.
 4. Stop het alarm en open de app. Het testalarm moet uit het overzicht verdwijnen.
 5. Maak twee normale alarmen. Controleer dat beide zichtbaar blijven, alleen hun tijdstippen getoond worden en **Verwijder → Annuleer** niets verwijdert.
 6. Verwijder één alarm en bevestig. Het andere alarm moet blijven staan.
@@ -56,7 +56,7 @@ niet dat een later systeemalarm afgaat.
 
 1. Ontkoppel USB en zet de installatiecomputer uit of verbreek zijn netwerkverbinding.
 2. Verbind de iPhone met een ander wifinetwerk en schakel LocalDevVPN in.
-3. Vernieuw SideStore én Alarm vanuit **My Apps**.
+3. Vernieuw SideStore én BeutAlarm vanuit **My Apps**.
 4. Controleer opnieuw **7 DAYS**, dat beide apps openen en dat ingestelde alarmen nog in het overzicht staan.
 5. Herhaal het testalarm met vergrendeld scherm na de vernieuwing.
 

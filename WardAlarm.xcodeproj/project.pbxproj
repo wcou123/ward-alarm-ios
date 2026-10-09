@@ -12,6 +12,8 @@
         000000000000000000000107 = {isa = PBXBuildFile; fileRef = 000000000000000000000207; };
         000000000000000000000108 = {isa = PBXBuildFile; fileRef = 000000000000000000000208; };
         000000000000000000000109 = {isa = PBXBuildFile; fileRef = 000000000000000000000209; };
+        000000000000000000000110 = {isa = PBXBuildFile; fileRef = 000000000000000000000212; };
+        000000000000000000000111 = {isa = PBXBuildFile; fileRef = 000000000000000000000213; };
 
         000000000000000000000201 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmRecord.swift; sourceTree = "<group>"; };
         000000000000000000000202 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmStore.swift; sourceTree = "<group>"; };
@@ -24,6 +26,8 @@
         000000000000000000000209 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTimeTests.swift; sourceTree = "<group>"; };
         000000000000000000000210 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WardAlarm.app; sourceTree = BUILT_PRODUCTS_DIR; };
         000000000000000000000211 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WardAlarmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+        000000000000000000000212 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmActions.swift; sourceTree = "<group>"; };
+        000000000000000000000213 = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "crescendo-alarm.wav"; sourceTree = "<group>"; };
 
         000000000000000000000301 = {
             isa = PBXGroup;
@@ -32,7 +36,7 @@
         };
         000000000000000000000302 = {
             isa = PBXGroup;
-            children = (000000000000000000000201, 000000000000000000000202, 000000000000000000000203, 000000000000000000000204, 000000000000000000000205, 000000000000000000000206, 000000000000000000000207, 000000000000000000000208);
+            children = (000000000000000000000201, 000000000000000000000202, 000000000000000000000203, 000000000000000000000204, 000000000000000000000205, 000000000000000000000206, 000000000000000000000207, 000000000000000000000208, 000000000000000000000212, 000000000000000000000213);
             path = WardAlarm;
             sourceTree = "<group>";
         };
@@ -52,11 +56,11 @@
         000000000000000000000401 = {
             isa = PBXSourcesBuildPhase;
             buildActionMask = 2147483647;
-            files = (000000000000000000000101, 000000000000000000000102, 000000000000000000000103, 000000000000000000000104, 000000000000000000000105);
+            files = (000000000000000000000101, 000000000000000000000102, 000000000000000000000103, 000000000000000000000104, 000000000000000000000105, 000000000000000000000110);
             runOnlyForDeploymentPostprocessing = 0;
         };
         000000000000000000000402 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-        000000000000000000000403 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000107, 000000000000000000000108); runOnlyForDeploymentPostprocessing = 0; };
+        000000000000000000000403 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000107, 000000000000000000000108, 000000000000000000000111); runOnlyForDeploymentPostprocessing = 0; };
         000000000000000000000404 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000109); runOnlyForDeploymentPostprocessing = 0; };
         000000000000000000000405 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
         000000000000000000000406 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
@@ -149,12 +153,12 @@
             buildSettings = {
                 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
                 CODE_SIGN_STYLE = Automatic;
-                CURRENT_PROJECT_VERSION = 1;
+                CURRENT_PROJECT_VERSION = 2;
                 ENABLE_PREVIEWS = NO;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = WardAlarm/Info.plist;
                 LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
-                MARKETING_VERSION = 1.0.0;
+                MARKETING_VERSION = 1.1.0;
                 PRODUCT_BUNDLE_IDENTIFIER = be.wardcoucke.alarm;
                 PRODUCT_NAME = "$(TARGET_NAME)";
                 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -169,12 +173,12 @@
             buildSettings = {
                 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
                 CODE_SIGN_STYLE = Automatic;
-                CURRENT_PROJECT_VERSION = 1;
+                CURRENT_PROJECT_VERSION = 2;
                 ENABLE_PREVIEWS = NO;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = WardAlarm/Info.plist;
                 LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
-                MARKETING_VERSION = 1.0.0;
+                MARKETING_VERSION = 1.1.0;
                 PRODUCT_BUNDLE_IDENTIFIER = be.wardcoucke.alarm;
                 PRODUCT_NAME = "$(TARGET_NAME)";
                 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

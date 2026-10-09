@@ -1,5 +1,6 @@
 import AlarmKit
 import SwiftUI
+import UIKit
 
 @MainActor
 struct AlarmView: View {
@@ -7,9 +8,11 @@ struct AlarmView: View {
     @State private var hours = 3
     @State private var minutes = 0
     @State private var clockTime = Date()
+    @State private var useDimAppearance = AlarmAppearancePolicy.isDim(brightness: Double(UIScreen.main.brightness), wasDim: false)
 
-    private let ink = Color(red: 0.12, green: 0.24, blue: 0.40)
-    private let paper = Color(red: 0.96, green: 0.95, blue: 0.92)
+    private let ink = Color(uiColor: .label)
+    private let paper = Color(uiColor: .systemGroupedBackground)
+    private let cardBackground = Color(uiColor: .secondarySystemGroupedBackground)
     private var duration: TimeInterval { TimeInterval(hours * 3600 + minutes * 60) }
     private var durationIsValid: Bool { duration >= 60 && duration <= AlarmTime.maximumDuration }
     private var durationLabel: String {
@@ -38,7 +41,12 @@ struct AlarmView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(paper)
-            .tint(ink)
+            .preferredColorScheme(useDimAppearance ? .dark : nil)
+            .onAppear { updateAmbientAppearance() }
+            .onReceive(NotificationCenter.default.publisher(for: UIScreen.brightnessDidChangeNotification)) { _ in
+                updateAmbientAppearance()
+            }
+            .tint(Color(uiColor: .systemBlue))
             .toolbar(.hidden, for: .navigationBar)
             .alert(item: $store.dialog) { dialog in
                 switch dialog {
@@ -56,16 +64,24 @@ struct AlarmView: View {
         }
     }
 
+    private func updateAmbientAppearance() {
+        // Read the brightness selected by iOS; never write the screen brightness.
+        // With automatic brightness enabled this follows the ambient-light sensor.
+        useDimAppearance = AlarmAppearancePolicy.isDim(
+            brightness: Double(UIScreen.main.brightness), wasDim: useDimAppearance
+        )
+    }
+
     private var header: some View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: "alarm.fill")
                 .font(.system(size: 26, weight: .semibold))
                 .foregroundStyle(ink)
                 .frame(width: 54, height: 54)
-                .background(.white, in: RoundedRectangle(cornerRadius: 18))
+                .background(cardBackground, in: RoundedRectangle(cornerRadius: 18))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
-                Text("Alarm").font(.largeTitle.bold()).foregroundStyle(ink)
+                Text("BeutAlarm").font(.largeTitle.bold()).foregroundStyle(ink)
                 Text("Een alarm, wanneer jij het nodig hebt.").font(.subheadline).foregroundStyle(.secondary)
             }
         }
@@ -153,7 +169,7 @@ struct AlarmView: View {
                     .font(.subheadline.bold())
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(.white, in: Capsule())
+                    .background(cardBackground, in: Capsule())
             }
             if let message = store.statusMessage {
                 Text(message).font(.subheadline).foregroundStyle(ink).accessibilityIdentifier("alarm-status")
@@ -202,6 +218,9 @@ struct AlarmView: View {
     private var soundCard: some View {
         card {
             Text("Controleer je alarm").font(.headline)
+            Text("Het Windows-geluid groeit één keer in 60 seconden van heel stil naar luid. Daarna blijft het luid tot je het stopt.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             SoundTestButton(preview: store.soundPreview) { store.dialog = .error($0) }
             Button {
                 Task { await store.testLockedScreenAlarm() }
@@ -220,7 +239,7 @@ struct AlarmView: View {
         VStack(alignment: .leading, spacing: 14, content: content)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(18)
-            .background(.white, in: RoundedRectangle(cornerRadius: 20))
+            .background(cardBackground, in: RoundedRectangle(cornerRadius: 20))
     }
 }
 
@@ -233,7 +252,7 @@ private struct SoundTestButton: View {
         Button {
             if preview.isPlaying { preview.stop() }
             else {
-                do { try preview.play() }
+                do { try preview.play(onError: onError) }
                 catch { onError(error.localizedDescription) }
             }
         } label: {

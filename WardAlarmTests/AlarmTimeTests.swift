@@ -52,3 +52,131 @@ final class AlarmTimeTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode([AlarmRecord].self, from: saved), [first, second])
     }
 }
+
+
+final class AlarmPhaseTests: XCTestCase {
+    func testLegacyRecordsWithoutContinuationRemainReadable() throws {
+        let legacy = Data("""
+        {"id":"00000000-0000-0000-0000-000000000001","createdAt":100,"fireDate":200,"isTest":false}
+        """.utf8)
+        let record = try JSONDecoder().decode(AlarmRecord.self, from: legacy)
+        XCTAssertNil(record.continuationID)
+        XCTAssertEqual(record.systemIDs, [record.id])
+        XCTAssertEqual(record.fireDate, Date(timeIntervalSinceReferenceDate: 200))
+    }
+
+    func testBothSoundPhasesAreOneVisibleAlarmAtItsOriginalTime() {
+        let record = AlarmRecord(fireDate: Date(timeIntervalSinceReferenceDate: 1000), continuationID: UUID())
+        let result = AlarmReconciliation.reconcile(saved: [record], system: [
+            SystemAlarmEntry(id: record.id, fireDate: record.fireDate, isAlerting: false),
+            SystemAlarmEntry(id: record.continuationID!, fireDate: record.continuationDate, isAlerting: true)
+        ])
+        XCTAssertEqual(result.records, [record])
+        XCTAssertEqual(result.records[0].fireDate, record.fireDate)
+        XCTAssertEqual(result.ringingIDs, [record.id])
+        XCTAssertEqual(record.continuationDate.timeIntervalSince(record.fireDate), 60)
+    }
+
+    func testLoudPhaseSurvivesAfterCrescendoIsRetired() {
+        let record = AlarmRecord(fireDate: Date(timeIntervalSinceReferenceDate: 1000), continuationID: UUID())
+        let result = AlarmReconciliation.reconcile(saved: [record], system: [
+            SystemAlarmEntry(id: record.continuationID!, fireDate: record.continuationDate, isAlerting: true)
+        ])
+        XCTAssertEqual(result.records, [record])
+        XCTAssertEqual(result.ringingIDs, [record.id])
+    }
+
+    func testIndependentAlarmRemainsBesideTheGroupedSoundPhases() {
+        let first = AlarmRecord(fireDate: Date(timeIntervalSinceReferenceDate: 1000), continuationID: UUID())
+        let second = AlarmRecord(fireDate: Date(timeIntervalSinceReferenceDate: 2000), continuationID: UUID())
+        let result = AlarmReconciliation.reconcile(saved: [first, second], system: [
+            SystemAlarmEntry(id: first.id, fireDate: first.fireDate, isAlerting: true),
+            SystemAlarmEntry(id: first.continuationID!, fireDate: first.continuationDate, isAlerting: false),
+            SystemAlarmEntry(id: second.id, fireDate: second.fireDate, isAlerting: false),
+            SystemAlarmEntry(id: second.continuationID!, fireDate: second.continuationDate, isAlerting: false)
+        ])
+        XCTAssertEqual(result.records, [first, second])
+        XCTAssertEqual(result.ringingIDs, [first.id])
+    }
+
+    func testContinuationIdentitySurvivesPersistence() throws {
+        let record = AlarmRecord(fireDate: Date(), isTest: true, continuationID: UUID())
+        let decoded = try JSONDecoder().decode(AlarmRecord.self, from: JSONEncoder().encode(record))
+        XCTAssertEqual(decoded, record)
+        XCTAssertEqual(decoded.systemIDs, record.systemIDs)
+    }
+
+    @MainActor
+    func testStoppingBeforeMinuteOneAlsoCancelsTheFutureLoudPhase() throws {
+        let record = AlarmRecord(fireDate: Date(), continuationID: UUID())
+        let other = UUID()
+        let client = FakeAlarmCanceler(ids: Set(record.systemIDs + [other]))
+        try AlarmCancellation.cancelAll(record.systemIDs, using: client)
+        XCTAssertEqual(client.ids, [other])
+        XCTAssertEqual(client.calls, record.systemIDs)
+    }
+
+    @MainActor
+    func testSystemStopAlreadyRemovingFirstPhaseDoesNotLeaveLoudPhase() throws {
+        let record = AlarmRecord(fireDate: Date(), continuationID: UUID())
+        let client = FakeAlarmCanceler(ids: [record.continuationID!])
+        try AlarmCancellation.cancelAll(record.systemIDs, using: client)
+        XCTAssertTrue(client.ids.isEmpty)
+        XCTAssertEqual(client.calls, [record.continuationID!])
+    }
+
+    @MainActor
+    func testFailureInOnePhaseStillAttemptsCancellationOfTheOther() {
+        let record = AlarmRecord(fireDate: Date(), continuationID: UUID())
+        let client = FakeAlarmCanceler(ids: Set(record.systemIDs))
+        client.failures = [record.id]
+        XCTAssertThrowsError(try AlarmCancellation.cancelAll(record.systemIDs, using: client))
+        XCTAssertEqual(client.calls, record.systemIDs)
+        XCTAssertEqual(client.ids, [record.id])
+    }
+
+    @MainActor
+    func testDisappearingAlarmRaceStillCancelsItsRemainingPhase() throws {
+        let record = AlarmRecord(fireDate: Date(), continuationID: UUID())
+        let client = FakeAlarmCanceler(ids: Set(record.systemIDs))
+        client.disappearDuringCancel = [record.id]
+        try AlarmCancellation.cancelAll(record.systemIDs, using: client)
+        XCTAssertTrue(client.ids.isEmpty)
+        XCTAssertEqual(client.calls, record.systemIDs)
+    }
+}
+
+@MainActor
+private final class FakeAlarmCanceler: AlarmCanceling {
+    enum Failure: Error { case refused }
+    var ids: Set<UUID>
+    var calls: [UUID] = []
+    var failures = Set<UUID>()
+    var disappearDuringCancel = Set<UUID>()
+
+    init(ids: Set<UUID>) { self.ids = ids }
+    func currentIDs() throws -> Set<UUID> { ids }
+    func cancel(id: UUID) throws {
+        calls.append(id)
+        if disappearDuringCancel.contains(id) {
+            ids.remove(id)
+            throw Failure.refused
+        }
+        if failures.contains(id) { throw Failure.refused }
+        ids.remove(id)
+    }
+}
+
+final class AlarmAppearanceTests: XCTestCase {
+    func testDimScreenRequestsDarkContentAndBrightScreenReleasesIt() {
+        XCTAssertTrue(AlarmAppearancePolicy.isDim(brightness: 0.1, wasDim: false))
+        XCTAssertFalse(AlarmAppearancePolicy.isDim(brightness: 0.8, wasDim: true))
+    }
+
+    func testBoundaryDoesNotFlickerOrReactToInvalidBrightness() {
+        XCTAssertTrue(AlarmAppearancePolicy.isDim(brightness: 0.3, wasDim: true))
+        XCTAssertFalse(AlarmAppearancePolicy.isDim(brightness: 0.3, wasDim: false))
+        XCTAssertTrue(AlarmAppearancePolicy.isDim(brightness: .nan, wasDim: true))
+        XCTAssertFalse(AlarmAppearancePolicy.isDim(brightness: .infinity, wasDim: false))
+    }
+}
