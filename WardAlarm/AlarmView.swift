@@ -28,7 +28,6 @@ struct AlarmView: View {
                     header
                     overview
                     permissionCard
-                    lockScreenCard
                     durationCard
                     clockCard
                     soundCard
@@ -36,6 +35,7 @@ struct AlarmView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 4)
+                    lockScreenCard
                 }
                 .padding(20)
                 .frame(maxWidth: 650)
