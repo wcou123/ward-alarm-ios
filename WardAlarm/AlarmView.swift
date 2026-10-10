@@ -26,10 +26,11 @@ struct AlarmView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     header
+                    overview
                     permissionCard
+                    lockScreenCard
                     durationCard
                     clockCard
-                    overview
                     soundCard
                     Text("Je iPhone beheert de ingestelde alarmen. Je hoeft deze app niet open te houden.")
                         .font(.footnote)
@@ -103,6 +104,23 @@ struct AlarmView: View {
                         .disabled(store.isBusy)
                 }
             }
+        }
+    }
+
+    private var lockScreenCard: some View {
+        card {
+            Toggle("Toon eerstvolgende alarm op toegangsscherm", isOn: Binding(
+                get: { store.showsNextAlarm },
+                set: { store.setNextAlarmDisplay($0) }
+            ))
+            .font(.subheadline.weight(.medium))
+            Text("Ook zichtbaar in de Dynamic Island. Je ziet het tijdstip van het alarm.")
+                .font(.footnote).foregroundStyle(.secondary)
+            if let message = store.nextAlarmDisplayMessage {
+                Text(message).font(.footnote).foregroundStyle(.secondary)
+            }
+            Text("iOS kan deze weergave na 8 uur beëindigen. Je alarm blijft ingesteld. Open de app om de weergave opnieuw te tonen.")
+                .font(.caption).foregroundStyle(.secondary)
         }
     }
 
@@ -188,6 +206,11 @@ struct AlarmView: View {
                     card {
                         HStack(alignment: .center, spacing: 16) {
                             VStack(alignment: .leading, spacing: 4) {
+                                if store.nextAlarm?.id == alarm.id {
+                                    Label("Eerstvolgende", systemImage: "bell.badge.fill")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(Color(uiColor: .systemBlue))
+                                }
                                 Text(AlarmDateText.time(alarm.fireDate, includeSeconds: alarm.isTest))
                                     .font(.system(.largeTitle, design: .rounded).weight(.semibold))
                                     .monospacedDigit()

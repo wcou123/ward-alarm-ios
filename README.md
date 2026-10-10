@@ -5,7 +5,8 @@ Een eenvoudige native alarmapp voor iOS 26 of hoger, met Apples AlarmKit.
 - Standaard: alarm binnen drie uur.
 - Snelknoppen, een eigen duur of het volgende gekozen kloktijdstip.
 - Meerdere onafhankelijke alarmen; een nieuw alarm komt erbij.
-- Een overzicht met datum en tijdstip, zonder afteller.
+- Actieve alarmen bovenaan, met datum en tijdstip en het eerstvolgende gemarkeerd.
+- Eén Live Activity met het eerstvolgende tijdstip op het toegangsscherm en in de Dynamic Island, zonder afteller.
 - Verwijderen vraagt eerst bevestiging.
 - Windows-alarmgeluid dat in 60 seconden van heel stil naar volle sterkte groeit, een geluidstest en een echt testalarm over tien seconden.
 - iOS beheert de alarmen; de app hoeft daarvoor niet op de voorgrond te blijven.
@@ -81,10 +82,36 @@ een vast ogenblik en verschuift niet bij een tijdzonewijziging. Bij een dubbel
 kloktijdstip door wintertijd kiest de app de eerstvolgende toekomstige
 voorkomst; bij een ontbrekend tijdstip door zomertijd behoudt hij de minuten.
 
+## Eerstvolgende alarm op het toegangsscherm
+
+De actieve alarmen staan direct onder de titel. De aparte Live Activity toont
+alleen het eerstvolgende toekomstige, door iOS bevestigde alarm. Toevoegen,
+bevestigd verwijderen, opnieuw openen en de Stop-knop op het systeemalarm werken
+deze weergave bij. De twee geluidsfasen blijven één logisch alarm. De schakelaar
+**Toon eerstvolgende alarm op toegangsscherm** staat standaard aan.
+
+Hiervoor is een gebundelde WidgetKit-extensie toegevoegd. Er is geen appgroep,
+server, pushcertificaat of extra betaalde dienst nodig. De app vraagt geen
+meldingsgeluid voor deze weergave. Behoud de extensie wanneer SideStore vraagt
+of app-extensies verwijderd moeten worden; die gebruikt een extra App ID.
+
+iOS Live Activities kunnen maximaal acht uur actief blijven en vervolgens nog
+maximaal vier uur op het toegangsscherm staan. Open de app om een beëindigde
+weergave opnieuw te starten. Dat is een weergavebeperking, geen beperking van het
+AlarmKit-alarm. Als de alarmtijd verstreken is zonder dat de app heeft kunnen
+bijwerken, toont de weergave **Alarmtijd bereikt** in plaats van een verlopen
+tijd als aankomend te presenteren. Na stoppen wordt het volgende alarm geselecteerd.
+Wanneer de app helemaal niet wordt uitgevoerd, kan zij niet zelfstandig een
+gewijzigde selectie publiceren; de Live Activity toont dan de laatst bevestigde
+tijd en de vermelding dat die verstreken is. Live Activities kunnen ook door de
+gebruiker of iOS verborgen worden. Dit is geen vastgepinde melding in het
+meldingencentrum. Controleer de zichtbaarheid en updates op de fysieke iPhone.
+
 ## Bronnen
 
 - [Apple: AlarmKit en systeemalarmen](https://developer.apple.com/videos/play/wwdc2025/230/).
 - [Apple: AlarmManager](https://developer.apple.com/documentation/alarmkit/alarmmanager).
+- [Apple: Live Activities, toegangsscherm, Dynamic Island en looptijd](https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities).
 - [Apple: automatische helderheid en omgevingslicht](https://support.apple.com/nl-nl/109351).
 - [Apple: een eigen geluidsbestand kiezen](https://developer.apple.com/documentation/activitykit/alertconfiguration/alertsound/named(_:)).
 - [GitHub: gratis standaard-runners voor openbare repositories](https://docs.github.com/en/billing/concepts/product-billing/github-actions).

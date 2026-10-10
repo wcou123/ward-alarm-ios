@@ -36,8 +36,9 @@ als gewone App Store-app geopend worden.
 
 1. Download `BeutAlarm.ipa` op de iPhone en open het bestand met SideStore, of gebruik de plusknop bij **My Apps**.
 2. Laat SideStore het bestand ondertekenen en installeren terwijl wifi en LocalDevVPN actief zijn.
-3. Open **BeutAlarm** en geef toestemming voor alarmen.
-4. Druk op **Test Windows-alarmgeluid**. Laat de geluidstest minstens 90 seconden spelen. Controleer dat het Windows-geluid heel stil begint en geleidelijk luider wordt en na minuut één luid blijft; stop met **Stop testgeluid**.
+3. Behoud de app-extensie als SideStore vraagt om extensies te verwijderen; **BeutAlarmWidgets** verzorgt de weergave van het volgende alarm.
+4. Open **BeutAlarm** en geef toestemming voor alarmen.
+5. Druk op **Test Windows-alarmgeluid**. Laat de geluidstest minstens 90 seconden spelen. Controleer dat het Windows-geluid heel stil begint en geleidelijk luider wordt en na minuut één luid blijft; stop met **Stop testgeluid**.
 
 ## 4. Alarmproef op een vergrendelde iPhone
 
@@ -52,7 +53,23 @@ als gewone App Store-app geopend worden.
 Deze proeven zijn nog niet uitgevoerd. Een geslaagde geluidstest alleen bewijst
 niet dat een later systeemalarm afgaat.
 
-## 5. Vernieuwen zonder computer
+## 5. Overzicht en eerstvolgende alarm controleren
+
+1. Open BeutAlarm. **Actieve alarmen** moet meteen onder de titel staan, boven de instelknoppen.
+2. Maak een alarm binnen drie uur. Laat **Toon eerstvolgende alarm op toegangsscherm** aan.
+3. Vergrendel de iPhone en controleer het tijdstip op het toegangsscherm en in de Dynamic Island. Bij uitgeschakelde live activiteiten: Instellingen → Apps → BeutAlarm → Live activiteiten.
+4. Voeg een vroeger alarm toe; de weergave moet dat tijdstip tonen. Verwijder het met bevestiging; de weergave moet terugkeren naar het andere alarm.
+5. Voer de tiensecondenproef uit terwijl het drie-uursalarm blijft staan. Na Stop op het systeemalarm moet de volgende weergave het drie-uursalarm tonen.
+6. Verwijder het laatste alarm; de aparte weergave moet verdwijnen. Schakel de weergave apart uit en controleer dat de ingestelde alarmen blijven staan.
+
+Apple beperkt de actieve Live Activity tot maximaal acht uur; daarna kan zij nog
+maximaal vier uur op het toegangsscherm blijven. Open BeutAlarm om de weergave
+opnieuw te starten. Het eigenlijke AlarmKit-alarm blijft onafhankelijk ingesteld.
+De weergave markeert een verstreken alarmtijd als **Alarmtijd bereikt** wanneer
+de app niet heeft kunnen bijwerken. Het gedrag op de fysieke iPhone is nog niet
+bevestigd door een build of simulatortest.
+
+## 6. Vernieuwen zonder computer
 
 1. Ontkoppel USB en zet de installatiecomputer uit of verbreek zijn netwerkverbinding.
 2. Verbind de iPhone met een ander wifinetwerk en schakel LocalDevVPN in.

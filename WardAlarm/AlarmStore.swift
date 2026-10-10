@@ -26,16 +26,21 @@ final class AlarmStore: ObservableObject {
     @Published private(set) var didReadSystemAlarms = false
     @Published private(set) var statusMessage: String?
     @Published var dialog: AlarmDialog?
+    @Published private(set) var showsNextAlarm: Bool
+    @Published private(set) var nextAlarmDisplayMessage: String?
+
+    var nextAlarm: AlarmRecord? { NextAlarmSelection.next(in: alarms, ringingIDs: ringingIDs) }
 
     let soundPreview = SoundPreview()
     private let defaults: UserDefaults
-    private static let storageKey = "ward.alarm.records.v1"
+    private static let storageKey = AlarmPersistence.recordsKey
     private var alarmUpdatesTask: Task<Void, Never>?
     private var authorizationTask: Task<Void, Never>?
     private var pendingRecords: [UUID: AlarmRecord] = [:]
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        showsNextAlarm = AlarmPersistence.showsNextAlarm(in: defaults)
         if let data = defaults.data(forKey: Self.storageKey),
            let saved = try? JSONDecoder().decode([AlarmRecord].self, from: data) {
             alarms = saved.sorted { $0.fireDate < $1.fireDate }
@@ -67,6 +72,7 @@ final class AlarmStore: ObservableObject {
         authorization = AlarmManager.shared.authorizationState
         guard authorization == .authorized else {
             didReadSystemAlarms = false
+            NextAlarmLiveActivity.synchronize(alarm: nil, enabled: false)
             return
         }
         do {
@@ -121,6 +127,20 @@ final class AlarmStore: ObservableObject {
             try await schedule(fireDate: Date().addingTimeInterval(AlarmTime.testDuration), isTest: true)
             statusMessage = "Testalarm ingesteld. Vergrendel nu je iPhone met de zijknop."
         } catch { dialog = .error(error.localizedDescription) }
+    }
+
+    func setNextAlarmDisplay(_ enabled: Bool) {
+        showsNextAlarm = enabled
+        defaults.set(enabled, forKey: AlarmPersistence.nextDisplayKey)
+        updateNextAlarmDisplay()
+    }
+
+    private func updateNextAlarmDisplay() {
+        // Only publish a next time after comparing saved records with iOS.
+        guard didReadSystemAlarms || !showsNextAlarm else { return }
+        NextAlarmLiveActivity.synchronize(alarm: nextAlarm, enabled: showsNextAlarm) { [weak self] message in
+            self?.nextAlarmDisplayMessage = message
+        }
     }
 
     func requestRemoval(of alarm: AlarmRecord) {
@@ -225,6 +245,7 @@ final class AlarmStore: ObservableObject {
         ringingIDs = result.ringingIDs
         didReadSystemAlarms = true
         persist()
+        updateNextAlarmDisplay()
 
         // When the app is running, retire the completed crescendo as soon as
         // the full-strength alarm alerts. iOS owns both schedules when closed.

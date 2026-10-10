@@ -57,6 +57,10 @@ struct StopBeutAlarmIntent: LiveActivityIntent {
     func perform() async throws -> some IntentResult {
         let ids = [alarmID, continuationID].compactMap(UUID.init(uuidString:))
         try AlarmCancellation.cancelAll(ids, using: SystemAlarmCanceler())
+        // This LiveActivityIntent runs in the app, including from a locked phone.
+        // Reconcile with iOS before advancing the separate next-alarm display.
+        try? NextAlarmLiveActivity.synchronizeFromSystem(allowStart: true)
+        await NextAlarmLiveActivity.finishPendingUpdates()
         return .result()
     }
 }

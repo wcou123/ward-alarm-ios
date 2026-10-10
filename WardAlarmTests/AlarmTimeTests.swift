@@ -180,3 +180,46 @@ final class AlarmAppearanceTests: XCTestCase {
         XCTAssertFalse(AlarmAppearancePolicy.isDim(brightness: .infinity, wasDim: false))
     }
 }
+
+
+final class NextAlarmSelectionTests: XCTestCase {
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    func testEmptyOverviewHasNoNextAlarm() {
+        XCTAssertNil(NextAlarmSelection.next(in: [], now: now))
+    }
+
+    func testSelectsEarliestTimeRegardlessOfInputOrder() {
+        let later = AlarmRecord(fireDate: now.addingTimeInterval(10_800))
+        let first = AlarmRecord(fireDate: now.addingTimeInterval(900))
+        XCTAssertEqual(NextAlarmSelection.next(in: [later, first], now: now), first)
+    }
+
+    func testRingingAndPastTimesAreNeverAdvertisedAsUpcoming() {
+        let past = AlarmRecord(fireDate: now.addingTimeInterval(-10))
+        let ringing = AlarmRecord(fireDate: now.addingTimeInterval(1))
+        let next = AlarmRecord(fireDate: now.addingTimeInterval(60))
+        XCTAssertEqual(NextAlarmSelection.next(in: [past, ringing, next], ringingIDs: [ringing.id], now: now), next)
+        XCTAssertNil(NextAlarmSelection.next(in: [AlarmRecord(fireDate: now)], now: now))
+    }
+
+    func testLoudContinuationDoesNotBecomeAnExtraUpcomingAlarm() {
+        let sounding = AlarmRecord(fireDate: now.addingTimeInterval(-30), continuationID: UUID())
+        let next = AlarmRecord(fireDate: now.addingTimeInterval(900))
+        let reconciled = AlarmReconciliation.reconcile(saved: [sounding, next], system: [
+            SystemAlarmEntry(id: sounding.continuationID!, fireDate: sounding.continuationDate, isAlerting: false),
+            SystemAlarmEntry(id: next.id, fireDate: next.fireDate, isAlerting: false)
+        ])
+        XCTAssertEqual(NextAlarmSelection.next(in: reconciled.records, now: now), next)
+    }
+
+    func testAddingEarlierAndRemovingItRestoresTheOtherAlarm() {
+        let original = AlarmRecord(fireDate: now.addingTimeInterval(10_800))
+        let added = AlarmRecord(fireDate: now.addingTimeInterval(900))
+        XCTAssertEqual(NextAlarmSelection.next(in: [original, added], now: now), added)
+        let reconciled = AlarmReconciliation.reconcile(saved: [original, added], system: [
+            SystemAlarmEntry(id: original.id, fireDate: original.fireDate, isAlerting: false)
+        ])
+        XCTAssertEqual(NextAlarmSelection.next(in: reconciled.records, now: now), original)
+    }
+}

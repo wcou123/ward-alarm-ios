@@ -14,6 +14,11 @@
         000000000000000000000109 = {isa = PBXBuildFile; fileRef = 000000000000000000000209; };
         000000000000000000000110 = {isa = PBXBuildFile; fileRef = 000000000000000000000212; };
         000000000000000000000111 = {isa = PBXBuildFile; fileRef = 000000000000000000000213; };
+        000000000000000000000112 = {isa = PBXBuildFile; fileRef = 000000000000000000000214; };
+        000000000000000000000113 = {isa = PBXBuildFile; fileRef = 000000000000000000000215; };
+        000000000000000000000114 = {isa = PBXBuildFile; fileRef = 000000000000000000000214; };
+        000000000000000000000115 = {isa = PBXBuildFile; fileRef = 000000000000000000000216; };
+        000000000000000000000116 = {isa = PBXBuildFile; fileRef = 000000000000000000000218; settings = {ATTRIBUTES = (RemoveHeadersOnCopy); }; };
 
         000000000000000000000201 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmRecord.swift; sourceTree = "<group>"; };
         000000000000000000000202 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmStore.swift; sourceTree = "<group>"; };
@@ -28,15 +33,20 @@
         000000000000000000000211 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WardAlarmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
         000000000000000000000212 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmActions.swift; sourceTree = "<group>"; };
         000000000000000000000213 = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "crescendo-alarm.wav"; sourceTree = "<group>"; };
+        000000000000000000000214 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextAlarmAttributes.swift; sourceTree = "<group>"; };
+        000000000000000000000215 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextAlarmLiveActivity.swift; sourceTree = "<group>"; };
+        000000000000000000000216 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeutAlarmWidgets.swift; sourceTree = "<group>"; };
+        000000000000000000000217 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+        000000000000000000000218 = {isa = PBXFileReference; explicitFileType = wrapper.app-extension; includeInIndex = 0; path = BeutAlarmWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 
         000000000000000000000301 = {
             isa = PBXGroup;
-            children = (000000000000000000000302, 000000000000000000000303, 000000000000000000000304);
+            children = (000000000000000000000302, 000000000000000000000303, 000000000000000000000304, 000000000000000000000305);
             sourceTree = "<group>";
         };
         000000000000000000000302 = {
             isa = PBXGroup;
-            children = (000000000000000000000201, 000000000000000000000202, 000000000000000000000203, 000000000000000000000204, 000000000000000000000205, 000000000000000000000206, 000000000000000000000207, 000000000000000000000208, 000000000000000000000212, 000000000000000000000213);
+            children = (000000000000000000000201, 000000000000000000000202, 000000000000000000000203, 000000000000000000000204, 000000000000000000000205, 000000000000000000000206, 000000000000000000000207, 000000000000000000000208, 000000000000000000000212, 000000000000000000000213, 000000000000000000000214, 000000000000000000000215);
             path = WardAlarm;
             sourceTree = "<group>";
         };
@@ -48,15 +58,22 @@
         };
         000000000000000000000304 = {
             isa = PBXGroup;
-            children = (000000000000000000000210, 000000000000000000000211);
+            children = (000000000000000000000210, 000000000000000000000211, 000000000000000000000218);
             name = Products;
+            sourceTree = "<group>";
+        };
+
+        000000000000000000000305 = {
+            isa = PBXGroup;
+            children = (000000000000000000000216, 000000000000000000000217);
+            path = BeutAlarmWidgets;
             sourceTree = "<group>";
         };
 
         000000000000000000000401 = {
             isa = PBXSourcesBuildPhase;
             buildActionMask = 2147483647;
-            files = (000000000000000000000101, 000000000000000000000102, 000000000000000000000103, 000000000000000000000104, 000000000000000000000105, 000000000000000000000110);
+            files = (000000000000000000000101, 000000000000000000000102, 000000000000000000000103, 000000000000000000000104, 000000000000000000000105, 000000000000000000000110, 000000000000000000000112, 000000000000000000000113);
             runOnlyForDeploymentPostprocessing = 0;
         };
         000000000000000000000402 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
@@ -65,12 +82,25 @@
         000000000000000000000405 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
         000000000000000000000406 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 
+        000000000000000000000407 = {
+            isa = PBXCopyFilesBuildPhase;
+            buildActionMask = 2147483647;
+            dstPath = "";
+            dstSubfolderSpec = 13;
+            files = (000000000000000000000116);
+            name = "Embed App Extensions";
+            runOnlyForDeploymentPostprocessing = 0;
+        };
+        000000000000000000000408 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000114, 000000000000000000000115); runOnlyForDeploymentPostprocessing = 0; };
+        000000000000000000000409 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+        000000000000000000000410 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+
         000000000000000000000501 = {
             isa = PBXNativeTarget;
             buildConfigurationList = 000000000000000000000802;
-            buildPhases = (000000000000000000000401, 000000000000000000000402, 000000000000000000000403);
+            buildPhases = (000000000000000000000401, 000000000000000000000402, 000000000000000000000403, 000000000000000000000407);
             buildRules = ();
-            dependencies = ();
+            dependencies = (000000000000000000000604);
             name = WardAlarm;
             productName = WardAlarm;
             productReference = 000000000000000000000210;
@@ -87,6 +117,20 @@
             productReference = 000000000000000000000211;
             productType = "com.apple.product-type.bundle.unit-test";
         };
+        000000000000000000000503 = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = 000000000000000000000804;
+            buildPhases = (000000000000000000000408, 000000000000000000000409, 000000000000000000000410);
+            buildRules = ();
+            dependencies = ();
+            name = BeutAlarmWidgets;
+            productName = BeutAlarmWidgets;
+            productReference = 000000000000000000000218;
+            productType = "com.apple.product-type.app-extension";
+        };
+        000000000000000000000603 = {isa = PBXContainerItemProxy; containerPortal = 000000000000000000000001; proxyType = 1; remoteGlobalIDString = 000000000000000000000503; remoteInfo = BeutAlarmWidgets; };
+        000000000000000000000604 = {isa = PBXTargetDependency; target = 000000000000000000000503; targetProxy = 000000000000000000000603; };
+
         000000000000000000000601 = {
             isa = PBXContainerItemProxy;
             containerPortal = 000000000000000000000001;
@@ -103,6 +147,7 @@
                 LastUpgradeCheck = 2600;
                 TargetAttributes = {
                     000000000000000000000501 = {CreatedOnToolsVersion = 26.0; };
+                    000000000000000000000503 = {CreatedOnToolsVersion = 26.0; };
                     000000000000000000000502 = {CreatedOnToolsVersion = 26.0; TestTargetID = 000000000000000000000501; };
                 };
             };
@@ -115,7 +160,7 @@
             productRefGroup = 000000000000000000000304;
             projectDirPath = "";
             projectRoot = "";
-            targets = (000000000000000000000501, 000000000000000000000502);
+            targets = (000000000000000000000501, 000000000000000000000502, 000000000000000000000503);
         };
 
         000000000000000000000701 = {
@@ -153,12 +198,12 @@
             buildSettings = {
                 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
                 CODE_SIGN_STYLE = Automatic;
-                CURRENT_PROJECT_VERSION = 2;
+                CURRENT_PROJECT_VERSION = 3;
                 ENABLE_PREVIEWS = NO;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = WardAlarm/Info.plist;
                 LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
-                MARKETING_VERSION = 1.1.0;
+                MARKETING_VERSION = 1.1.1;
                 PRODUCT_BUNDLE_IDENTIFIER = be.wardcoucke.alarm;
                 PRODUCT_NAME = "$(TARGET_NAME)";
                 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -173,12 +218,12 @@
             buildSettings = {
                 ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
                 CODE_SIGN_STYLE = Automatic;
-                CURRENT_PROJECT_VERSION = 2;
+                CURRENT_PROJECT_VERSION = 3;
                 ENABLE_PREVIEWS = NO;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = WardAlarm/Info.plist;
                 LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
-                MARKETING_VERSION = 1.1.0;
+                MARKETING_VERSION = 1.1.1;
                 PRODUCT_BUNDLE_IDENTIFIER = be.wardcoucke.alarm;
                 PRODUCT_NAME = "$(TARGET_NAME)";
                 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -220,9 +265,52 @@
             };
             name = Release;
         };
+        000000000000000000000707 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                APPLICATION_EXTENSION_API_ONLY = YES;
+                CODE_SIGN_STYLE = Automatic;
+                CURRENT_PROJECT_VERSION = 3;
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = BeutAlarmWidgets/Info.plist;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks");
+                MARKETING_VERSION = 1.1.1;
+                PRODUCT_BUNDLE_IDENTIFIER = be.wardcoucke.alarm.next-alarm;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SKIP_INSTALL = YES;
+                SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+                SUPPORTS_MACCATALYST = NO;
+                SWIFT_VERSION = 5.0;
+                TARGETED_DEVICE_FAMILY = "1,2";
+            };
+            name = Debug;
+        };
+
+        000000000000000000000708 = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                APPLICATION_EXTENSION_API_ONLY = YES;
+                CODE_SIGN_STYLE = Automatic;
+                CURRENT_PROJECT_VERSION = 3;
+                GENERATE_INFOPLIST_FILE = NO;
+                INFOPLIST_FILE = BeutAlarmWidgets/Info.plist;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks");
+                MARKETING_VERSION = 1.1.1;
+                PRODUCT_BUNDLE_IDENTIFIER = be.wardcoucke.alarm.next-alarm;
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SKIP_INSTALL = YES;
+                SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+                SUPPORTS_MACCATALYST = NO;
+                SWIFT_VERSION = 5.0;
+                TARGETED_DEVICE_FAMILY = "1,2";
+            };
+            name = Release;
+        };
+
         000000000000000000000801 = {isa = XCConfigurationList; buildConfigurations = (000000000000000000000701, 000000000000000000000702); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
         000000000000000000000802 = {isa = XCConfigurationList; buildConfigurations = (000000000000000000000703, 000000000000000000000704); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
         000000000000000000000803 = {isa = XCConfigurationList; buildConfigurations = (000000000000000000000705, 000000000000000000000706); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+        000000000000000000000804 = {isa = XCConfigurationList; buildConfigurations = (000000000000000000000707, 000000000000000000000708); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
     };
     rootObject = 000000000000000000000001;
 }

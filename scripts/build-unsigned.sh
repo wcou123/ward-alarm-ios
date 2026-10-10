@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 
 xcodebuild -version
 python3 scripts/render-gradual-sound.py --verify
-plutil -lint WardAlarm/Info.plist WardAlarm.xcodeproj/project.pbxproj
+plutil -lint WardAlarm/Info.plist BeutAlarmWidgets/Info.plist WardAlarm.xcodeproj/project.pbxproj
 
 xcodebuild \
   -project WardAlarm.xcodeproj \
@@ -17,7 +17,7 @@ xcodebuild \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGN_IDENTITY= \
-  CURRENT_PROJECT_VERSION="${BUILD_NUMBER:-2}" \
+  CURRENT_PROJECT_VERSION="${BUILD_NUMBER:-3}" \
   build
 
 mkdir -p dist/Payload
@@ -33,13 +33,23 @@ with (app / 'Info.plist').open('rb') as f:
 assert info['CFBundleIdentifier'] == 'be.wardcoucke.alarm'
 assert info['CFBundleDisplayName'] == 'BeutAlarm'
 assert info['NSAlarmKitUsageDescription']
+assert info['NSSupportsLiveActivities']
 assert info['MinimumOSVersion'] == '26.0'
 assert (app / info['CFBundleExecutable']).stat().st_size > 0
 assert not (app / 'embedded.mobileprovision').exists(), 'The cloud output must be unsigned.'
 sound = app / 'windows-alarm.wav'
 assert sound.read_bytes() == Path('scripts/windows-alarm-source.wav').read_bytes()
 assert (app / 'crescendo-alarm.wav').read_bytes() == Path('WardAlarm/crescendo-alarm.wav').read_bytes()
-print('Unsigned BeutAlarm app and 60-second crescendo sound checked.')
+extension = app / 'PlugIns/BeutAlarmWidgets.appex'
+with (extension / 'Info.plist').open('rb') as f:
+    widget_info = plistlib.load(f)
+assert widget_info['CFBundleIdentifier'] == 'be.wardcoucke.alarm.next-alarm'
+assert widget_info['NSExtension']['NSExtensionPointIdentifier'] == 'com.apple.widgetkit-extension'
+assert widget_info['CFBundleVersion'] == info['CFBundleVersion']
+assert widget_info['CFBundleShortVersionString'] == info['CFBundleShortVersionString']
+assert (extension / widget_info['CFBundleExecutable']).stat().st_size > 0
+assert not (extension / 'embedded.mobileprovision').exists()
+print('Unsigned BeutAlarm app, crescendo and next-alarm extension checked.')
 PY
 
 (cd dist && /usr/bin/zip -qry BeutAlarm.ipa Payload)

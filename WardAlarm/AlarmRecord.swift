@@ -23,6 +23,25 @@ struct AlarmRecord: Codable, Identifiable, Equatable {
     }
 }
 
+enum AlarmPersistence {
+    static let recordsKey = "ward.alarm.records.v1"
+    static let nextDisplayKey = "beut.alarm.next-display.v1"
+
+    static func showsNextAlarm(in defaults: UserDefaults) -> Bool {
+        defaults.object(forKey: nextDisplayKey) as? Bool ?? true
+    }
+}
+
+enum NextAlarmSelection {
+    static func next(in records: [AlarmRecord], ringingIDs: Set<UUID> = [], now: Date = Date()) -> AlarmRecord? {
+        records.filter { $0.fireDate > now && !ringingIDs.contains($0.id) }
+            .min {
+                if $0.fireDate == $1.fireDate { return $0.id.uuidString < $1.id.uuidString }
+                return $0.fireDate < $1.fireDate
+            }
+    }
+}
+
 enum AlarmTimeError: LocalizedError {
     case invalidDuration
     case invalidClockTime
